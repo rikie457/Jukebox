@@ -1,0 +1,279 @@
+body {
+    background-color: #f0f0f0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+p, h1, h2, h3, h4, h5 {
+    color: black;
+}
+
+.input-group {
+    margin: 10px;
+}
+
+.input-group input {
+    display: block;
+    border: solid 1px #ccc;
+    height: 25px;
+    width: 100%;
+}
+
+.container-auth {
+    width: 30vw;
+
+    margin-left: 35vw;
+    margin-top: 30vh;
+
+    padding: 25px;
+    box-shadow: 0 0 5px #999;
+
+    background-color: #ffffff;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    margin-top: 50px;
+
+    padding: 25px;
+
+    border-radius: 5px;
+
+    background-color: #ccc;
+    box-shadow: 0 0 15px black;
+}
+
+.navigator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    box-shadow: 0 0 5px #999;
+    background: #7C7C7C;
+    overflow: hidden;
+}
+
+.navigator .item {
+    float: left;
+    min-width: 50px;
+    max-width: 100px;
+    padding: 10px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.navigator .item:hover {
+    opacity: 0.7;
+    background-color: #999999;
+}
+
+.navigator .item:hover.active {
+    opacity: 0.7;
+    background-color: #ccc;
+}
+
+.navigator .item input[type=submit] {
+    border: none;
+    background: none;
+    display: inline;
+    width: 100%;
+    height: 100%;
+}
+
+.navigator .item-search {
+    float: right;
+    margin-right: 50px;
+    padding: 5px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.navigator .item-name {
+    font-size: 15px;
+    float: right;
+    margin-right: 50px;
+    margin-top : 5px;
+    padding: 5px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.navigator .item-search input {
+    border: solid 1px black;
+    background: #fff;
+    display: inline;
+    margin-right: 0;
+    border-radius: 5px 0 0 5px;
+    padding: 5px;
+}
+
+.navigator .item-search button {
+    border: solid 1px black;
+    border-left: none;
+    background: #ddd;
+    display: inline;
+    border-radius: 0 5px 5px 0;
+    padding: 6px;
+    margin-left: -4px;
+}
+
+.playlist {
+    width: 300%;
+    padding: 1%;
+}
+
+.playlist:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 5px black;
+    background-color: #aaa;
+}
+
+.playlist-item {
+    width: inherit;
+    padding: 2px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.playlist-item:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 5px black;
+    background-color: #aaa;
+}
+
+.container .item-search {
+    width: 270px;
+    margin: 0 auto;
+}
+
+.container .item-search input {
+    border: solid 1px black;
+    width: 200px;
+    height: 25px;
+    border-right: none;
+    background: #fff;
+    padding: 5px;
+    display: inline;
+    margin-right: 0;
+    border-radius: 5px 0 0 5px;
+    box-shadow: 3px 3px 5px #aaa;
+}
+
+.container .item-search input[type=number] {
+    width: 40px;
+    border: solid 1px black;
+    border-radius: 0;
+    margin-left: -5px;
+}
+
+.container .item-search button {
+    border: solid 1px black;
+    height: 25px;
+    width: 25px;
+    border-left: none;
+    background: #ddd;
+    margin-left: -4px;
+    display: inline;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 3px 3px 5px #aaa;
+
+}
+
+.search-item-menu {
+    box-shadow: 0 0 5px #999;
+    padding: 11px;
+    margin-top: 0;
+}
+
+iframe {
+    border: none;
+}
+
+.active {
+    background-color: #ccc;
+}
+
+.nav-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/*made by Menno & Tycho */
+#artistgenres {
+    text-transform: capitalize;
+}
+
+ul {
+    list-style-type: none;
+}
+
+#artistfoto, #artistgenres, #artistvolgers {
+    text-align: center;
+}
+
+#artistfotoid {
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+#playlists {
+    display: none;
+    width: 33%;
+}
+
+#topBlackBar {
+    border-top: 2.5px solid #000;
+}
+
+.result {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 0;
+    height: 20px;
+    transition: width 0.5s, display 0.5s, padding 0.5s;
+    background: #999;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.result p {
+    display: inline;
+}
+
+.playlistPage {
+    min-height: 480px;
+}
+
+.playlist-frame {
+    border: solid 1px black;
+}
+
+.playlistPage .playlist-frame {
+    min-height: inherit;
+    display: inline-block;
+    float: left;
+    width: auto;
+}
+
+.playlist-item-frame {
+    margin-left: 1%;
+    width: 200px;
+}
+
+.playlistPage .playlist-item-frame {
+    min-height: inherit;
+    display: inline-block;
+    float: left;
+    width: 750px;
+    padding: 0 5px;
+}
+
+#foutmelding {
+    text-align: center;
+}
+.video-frame {
+    width:500px;
+    margin: 0 auto;
+}

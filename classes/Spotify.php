@@ -1,0 +1,173 @@
+<?php
+
+/**
+ *
+ * Created by PhpStorm.
+ * User: Tycho
+ * Date: 17-5-2017
+ * Time: 15:56
+ * /.*
+ * De spotify class zorgt ervoor dat er gegevens opgehaald kunnen worden, ook zorgt de spotify class dat de youtube en spotify api bij elkaar komen zodat deze verwerkt kunnen worden.
+ */
+class Spotify extends youtube
+{
+    /**
+     * Spotify constructor.
+     *
+     * Deze maakt een token aan zodat de rest van de bestanden deze kunnen gebruiken.
+     *
+     * @return void
+     */
+    function __construct()
+    {
+        $this->lastid = NULL;
+        $this->token = NULL;
+        $this->setAccessToken($this->requestAccessToken());
+    }
+
+    /**
+     *
+     * Hoofd onderdeel van de Spotify class. Dit is de functie die alles ophaald.
+     *
+     * @param $q Dit is het zoek trefwoord.
+     * @param $max Dit is het aantal items wat de functie moet teruggeven.
+     * @return array|bool|mixed Deze geeft een array vol met items terug zodat deze verwerkt kunnen worden.
+     */
+
+    public function search($q, $max)
+    {
+        if (!empty($q)) {
+            $results = $this->getSpotifyResult(API::Spotify_BASE_URL . "search" . "?q=" . urlencode($q) . "&limit=" . $max . "&type=track", $this->getAccessToken());
+            $resultarray = json_decode($results);
+            $trackitems = $resultarray->{'tracks'}->{'items'};
+            if (isset($trackitems[0]->album->artists[0]->id)) {
+                $this->setLastid($trackitems[0]->album->artists[0]->id);
+            }
+
+            $spotifyresults = array();
+            $youtuberesults = array();
+            $tracks = array();
+            $results = array();
+
+            for ($i = 0; $i < count($trackitems); $i++) {
+                array_push($youtuberesults, $this->youtubesearch($trackitems[$i]->name . ' ' . $trackitems[0]->album->artists[0]->name, 1));
+            }
+            for ($i = 0; $i < count($trackitems); $i++) {
+                array_push($spotifyresults, $trackitems[$i]->external_urls->spotify);
+            }
+            $tracks['youtubeids'] = $youtuberesults;
+            $tracks['spotifyurls'] = $spotifyresults;
+            if (isset($trackitems)) {
+                for ($i = 0; $i < count($trackitems); $i++) {
+                    if (!Database::select(sprintf("SELECT id FROM song WHERE songname = '%s'", mysqli_real_escape_string(Database::$connection, $trackitems[$i]->name)))) {
+                        if ($tracks['youtubeids'][$i]) {
+                            Database::insert('song', array('songname' => $trackitems[$i]->name,
+                                'spotifyembed' => Database::escape($tracks['spotifyurls'][$i]),
+                                'duration' => Database::escape($tracks['youtubeids'][$i][1]),
+                                'youtubeembed' => Database::escape($tracks['youtubeids'][$i][0])));
+                        } else {
+                            Database::insert('song', array('songname' => $trackitems[$i]->name,
+                                'spotifyembed' => Database::escape($tracks['spotifyurls'][$i])));
+                        }
+                    }
+                }
+            }
+            if (isset($tracks)) {
+                for ($i = 0; $i < count($trackitems); $i++) {
+                    array_push($results, Database::select(sprintf("SELECT id, spotifyembed, youtubeembed FROM song WHERE songname = '%s'", mysqli_real_escape_string(Database::$connection, $trackitems[$i]->name))));
+                }
+
+
+                return $results;
+            }
+
+            return false;
+
+        }
+    }
+
+    /**
+     * Deze functie haalt allerlei informatie over de artiest van een nummer op.
+     *
+     * @return mixed Deze geeft een array terug met allerlei artiest informatie.
+     */
+
+    public function searchartist()
+    {
+        $results = $this->getSpotifyResult(API::Spotify_BASE_URL . "artists/" . urlencode($this->getLastid()), $this->getAccessToken());
+        $resultarray = json_decode($results);
+
+
+        return $resultarray;
+    }
+
+    /**
+     * Deze functie haalt een access token van spotify op.
+     *
+     * @return string de access token.
+     */
+    public function requestAccessToken()
+    {
+        $header = array('Authorization: Basic ' . base64_encode(API::Spotify_CLIENT_ID . ':' . API::Spotify_CLIENT_SECRET));
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, "https://accounts.spotify.com/api/token");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        $result = curl_exec($curl);
+
+        if ($result == FALSE) {
+            echo curl_error($curl);
+            curl_close($curl);
+
+            return FALSE;
+        }
+        curl_close($curl);
+
+        $decodedresult = json_decode($result);
+
+        return $decodedresult->access_token;
+    }
+
+    /**
+     * Haalt de accesstoken op.
+     *
+     * @return null
+     */
+    public function getAccessToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Zet de access token.
+     *
+     * @param $accesstoken
+     */
+    public function setAccessToken($accesstoken)
+    {
+        $this->token = $accesstoken;
+    }
+
+    /**
+     * Haalt de laatst gebruikte id op.
+     *
+     * @return null
+     */
+    public function getLastid()
+    {
+        return $this->lastid;
+    }
+
+    /**
+     *
+     * Zet de laatst gebruikte id.
+     *
+     * @param $id
+     */
+    public function setLastid($id)
+    {
+        $this->lastid = $id;
+    }
+}
